@@ -183,7 +183,7 @@ with col_a:
     irrigation  = st.slider("💧 Irrigation (times)",      1,  10,   5,  1)
     soil_ph     = st.slider("🪨 Soil pH",               5.5, 9.0, 7.2, 0.1)
 with col_b:
-    temperature = st.slider("🌡️ Temperature (°C)",      15,  45,  25,  1)
+    temperature = st.slider("🌡️ Temperature (°C)",      25,  52,  30,  20)
     phosphorus  = st.slider("⚗️ Phosphorus (kg/ha)",     15, 100,  60,  5)
     density     = st.slider("🌱 Sowing Density (kg/ha)", 60, 180, 120,  5)
 

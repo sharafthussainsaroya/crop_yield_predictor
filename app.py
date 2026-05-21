@@ -24,8 +24,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# ── Custom CSS ───────────────────────────────────────────────
+    # ── Custom CSS ───────────────────────────────────────────────
 st.markdown("""
 <style>
 [data-testid="stToolbar"] {display: none !important;}

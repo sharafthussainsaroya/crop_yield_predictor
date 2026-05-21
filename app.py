@@ -28,7 +28,12 @@ st.set_page_config(
 # ── Custom CSS ───────────────────────────────────────────────
 st.markdown("""
 <style
-<style>
+[data-testid="stToolbar"] {display: none !important;}
+#MainMenu {visibility: hidden !important;}
+footer {visibility: hidden !important;}
+.stDeployButton {display: none !important;}
+[data-testid="stDecoration"] {display: none !important;}
+[data-testid="stStatusWidget"] {display: none !important;}
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap');
 html, body, [class*="css"] { font-family: 'Outfit', sans-serif; }
 

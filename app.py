@@ -90,9 +90,9 @@ st.markdown("""
 def train_model():
     np.random.seed(42)
     n = 300
-    crops_enc = np.random.choice([0, 1, 2], n)
-    crop_names = {0: 'Wheat', 1: 'Maize', 2: 'Canola'}
-    base_map   = {0: 3.5,     1: 5.0,     2: 2.0}
+    crops_enc = np.random.choice([0, 1, 2, 3, 4, 5], n)
+    crop_names = {0: 'Wheat', 1: 'Maize', 2: 'Canola', 3: 'Sugarcane', 4: 'Cotton', 5: 'Rice'}
+    base_map   = {0: 3.5,     1: 5.0,     2: 2.0,      3: 60.0,        4: 2.5,      5: 4.0}
 
     df = pd.DataFrame({
         'crop':        crops_enc,
@@ -149,7 +149,7 @@ st.markdown("""
 c1, c2, c3 = st.columns(3)
 c1.metric("🤖 Model Accuracy (R²)", f"{r2 * 100:.1f}%")
 c2.metric("📉 Mean Abs. Error", f"{mae} ton/ha")
-c3.metric("🌱 Crops Supported", "3 (Wheat, Maize, Canola)")
+c3.metric("🌱 Crops Supported", "6 (Wheat, Maize, Canola, Sugarcane, Cotton, Rice)")
 
 st.divider()
 
@@ -158,8 +158,8 @@ with st.sidebar:
     st.markdown("## 🎛️ Field Parameters")
     st.markdown("Adjust the sliders below:")
 
-    crop_name = st.selectbox("🌾 Crop Type", ["Wheat", "Maize", "Canola"])
-    crop_enc  = {"Wheat": 0, "Maize": 1, "Canola": 2}[crop_name]
+    crop_name = st.selectbox("🌾 Crop Type", ["Wheat", "Maize", "Canola", "Sugarcane", "Cotton", "Rice"])
+    crop_enc  = {"Wheat": 0, "Maize": 1, "Canola": 2, "Sugarcane": 3, "Cotton": 4, "Rice": 5}[crop_name]
 
     st.markdown("---")
     rainfall    = st.slider("🌧️ Rainfall (mm)",        100, 700, 350, 10)
@@ -188,7 +188,7 @@ if predict_btn:
     }])
 
     predicted_yield = round(float(model.predict(input_data)[0]), 2)
-    base = {"Wheat": 3.5, "Maize": 5.0, "Canola": 2.0}[crop_name]
+    base = {"Wheat": 3.5, "Maize": 5.0, "Canola": 2.0, "Sugarcane": 60.0, "Cotton": 2.5, "Rice": 4.0}[crop_name]
     pct  = (predicted_yield / (base * 1.6)) * 100
 
     if pct >= 85: rating, stars, rcolor = "Excellent 🌟", "⭐⭐⭐⭐⭐", "#22C55E"
@@ -201,7 +201,7 @@ if predict_btn:
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        emoji = {"Wheat":"🌾","Maize":"🌽","Canola":"🌼"}[crop_name]
+        emoji = {"Wheat":"🌾","Maize":"🌽","Canola":"🌼","Sugarcane":"🎋","Cotton":"🌿","Rice":"🍚"}[crop_name]
         st.markdown(f"""
         <div class="result-box">
             <div style="font-size:3rem">{emoji}</div>
@@ -286,6 +286,14 @@ else:
         st.info("🌽 **Maize**\nBase Yield: 5.0 ton/ha\nBest Temp: 22–28°C")
     with col3:
         st.info("🌼 **Canola**\nBase Yield: 2.0 ton/ha\nBest Temp: 15–20°C")
+
+    col4, col5, col6 = st.columns(3)
+    with col4:
+        st.info("🎋 **Sugarcane**\nBase Yield: 60 ton/ha\nBest Temp: 27–35°C")
+    with col5:
+        st.info("🌿 **Cotton**\nBase Yield: 2.5 ton/ha\nBest Temp: 25–35°C")
+    with col6:
+        st.info("🍚 **Rice**\nBase Yield: 4.0 ton/ha\nBest Temp: 22–30°C")
 
     st.markdown("---")
     st.markdown("**👨‍🎓 About This Project**")

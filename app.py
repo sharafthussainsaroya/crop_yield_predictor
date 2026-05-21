@@ -22,19 +22,20 @@ st.set_page_config(
     page_title="Crop Yield Predictor | Sharaft Hussain",
     page_icon="🌾",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
-    # ── Custom CSS ───────────────────────────────────────────────
+
+# ── Custom CSS ───────────────────────────────────────────────
 st.markdown("""
 <style>
 [data-testid="stToolbar"] {display: none !important;}
+[data-testid="stSidebar"] {display: none !important;}
 #MainMenu {visibility: hidden !important;}
 footer {visibility: hidden !important;}
 .stDeployButton {display: none !important;}
 [data-testid="stDecoration"] {display: none !important;}
 [data-testid="stStatusWidget"] {display: none !important;}
-[data-testid="stSidebar"] {display: block !important; min-width: 300px !important; width: 300px !important;}
-section[data-testid="stSidebar"] > div {width: 300px !important;}
+[data-testid="stSidebarCollapsedControl"] {display: none !important;}
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap');
 html, body, [class*="css"] { font-family: 'Outfit', sans-serif; }
 
@@ -87,6 +88,13 @@ html, body, [class*="css"] { font-family: 'Outfit', sans-serif; }
         border: none !important;
         width: 100% !important;
         font-family: 'Outfit', sans-serif !important;
+    }
+    .param-box {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        border: 1px solid #D1FAE5;
+        margin-bottom: 20px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -159,31 +167,29 @@ c3.metric("🌱 Crops Supported", "6 (Wheat, Maize, Canola, Sugarcane, Cotton, R
 
 st.divider()
 
-# ── Sidebar Inputs ────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("## 🎛️ Field Parameters")
-    st.markdown("Adjust the sliders below:")
+# ── Field Parameters (Main Page) ─────────────────────────────
+st.markdown("## 🎛️ Field Parameters")
+st.markdown("Adjust the sliders below:")
 
-    crop_name = st.selectbox("🌾 Crop Type", ["Wheat", "Maize", "Canola", "Sugarcane", "Cotton", "Rice"])
-    crop_enc  = {"Wheat": 0, "Maize": 1, "Canola": 2, "Sugarcane": 3, "Cotton": 4, "Rice": 5}[crop_name]
+st.markdown('<div class="param-box">', unsafe_allow_html=True)
 
-    st.markdown("---")
+crop_name = st.selectbox("🌾 Crop Type", ["Wheat", "Maize", "Canola", "Sugarcane", "Cotton", "Rice"])
+crop_enc  = {"Wheat": 0, "Maize": 1, "Canola": 2, "Sugarcane": 3, "Cotton": 4, "Rice": 5}[crop_name]
+
+col_a, col_b = st.columns(2)
+with col_a:
     rainfall    = st.slider("🌧️ Rainfall (mm)",        100, 700, 350, 10)
-    temperature = st.slider("🌡️ Temperature (°C)",      15,  45,  25,  1)
     nitrogen    = st.slider("🧪 Nitrogen (kg/ha)",       30, 200, 120,  5)
-    phosphorus  = st.slider("⚗️ Phosphorus (kg/ha)",     15, 100,  60,  5)
     irrigation  = st.slider("💧 Irrigation (times)",      1,  10,   5,  1)
     soil_ph     = st.slider("🪨 Soil pH",               5.5, 9.0, 7.2, 0.1)
+with col_b:
+    temperature = st.slider("🌡️ Temperature (°C)",      15,  45,  25,  1)
+    phosphorus  = st.slider("⚗️ Phosphorus (kg/ha)",     15, 100,  60,  5)
     density     = st.slider("🌱 Sowing Density (kg/ha)", 60, 180, 120,  5)
 
-    st.markdown("---")
-    predict_btn = st.button("🔬 PREDICT YIELD")
+st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("---")
-    st.markdown("**👨‍🎓 Developed by**")
-    st.markdown("**Sharaft Hussain**")
-    st.markdown("M.Sc. Agronomy | NAVTTC Python A+")
-    st.markdown("[🔗 LinkedIn](https://www.linkedin.com/in/sharaft-hussain-saroya)")
+predict_btn = st.button("🔬 PREDICT YIELD")
 
 # ── Prediction ────────────────────────────────────────────────
 if predict_btn:
@@ -203,7 +209,7 @@ if predict_btn:
     elif pct >= 40: rating, stars, rcolor = "Below Avg ⚠️","⭐⭐",     "#F97316"
     else:           rating, stars, rcolor = "Poor ❌",    "⭐",        "#EF4444"
 
-    # Result
+    st.divider()
     col1, col2 = st.columns([1, 1])
 
     with col1:
@@ -222,7 +228,6 @@ if predict_btn:
         </div>
         """, unsafe_allow_html=True)
 
-        # Insights
         st.markdown('<div class="insight-box"><b>💡 Agronomic Insights</b><br>', unsafe_allow_html=True)
         insights = []
         if temperature > 32:
@@ -241,7 +246,6 @@ if predict_btn:
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col2:
-        # Radar Chart
         categories  = ['Rainfall', 'Nitrogen', 'Irrigation', 'Phosphorus', 'Temp Opt', 'Soil pH']
         values = [
             min((rainfall / 650) * 100, 100),
@@ -267,7 +271,6 @@ if predict_btn:
 
     st.divider()
 
-    # Feature Importance Bar Chart
     st.markdown("### 📊 What Affects Yield the Most?")
     features    = ['crop','rainfall','temperature','nitrogen','phosphorus','irrigation','soil_ph','density']
     feat_labels = ['Crop Type','Rainfall','Temperature','Nitrogen','Phosphorus','Irrigation','Soil pH','Density']
@@ -283,8 +286,7 @@ if predict_btn:
     st.pyplot(fig2)
 
 else:
-    # Welcome screen
-    st.markdown("### 👈 Set your field parameters in the sidebar and click **PREDICT YIELD**")
+    st.markdown("---")
     col1, col2, col3 = st.columns(3)
     with col1:
         st.info("🌾 **Wheat**\nBase Yield: 3.5 ton/ha\nBest Temp: 20–25°C")
@@ -309,3 +311,6 @@ else:
     Python programming skills (NAVTTC Advance Python A+) to create a practical
     Machine Learning tool for Pakistani farmers and researchers.
     """)
+
+st.markdown("---")
+st.markdown("**👨‍🎓 Developed by Sharaft Hussain** | M.Sc. Agronomy | NAVTTC Python A+ | [🔗 LinkedIn](https://www.linkedin.com/in/sharaft-hussain-saroya)")

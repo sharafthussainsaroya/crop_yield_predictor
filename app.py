@@ -28,6 +28,8 @@ st.set_page_config(
 # ── Custom CSS ───────────────────────────────────────────────
 st.markdown("""
 <style
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap');
 html, body, [class*="css"] { font-family: 'Outfit', sans-serif; }
 
     .main { background: linear-gradient(135deg, #F0FDF8, #F0F9FF); }
